@@ -2,25 +2,35 @@ import { Fragment } from "react";
 import Search from "./Search";
 import { Link } from "react-router-dom";
 
-function Header(){
-    return <Fragment>
-        <nav className="navbar row">
-      <div className="col-12 col-md-3">
-        <div className="navbar-brand">
-          <Link to="/">
-                    <img width="80px" src="/images/logo.png" />
-          </Link>
-        </div>
-      </div>
+function Header({ cartItems }) {
+    return (
+        <Fragment>
+            <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+                <div className="container-fluid">
+                    <div className="col-12 col-md-3">
+                        <div className="navbar-brand">
+                            <Link to="/">
+                                <img width="50px" src="/images/logo.png" alt="Logo" />
+                            </Link>
+                        </div>
+                    </div>
 
-      <Search/>
+                    <div className="col-12 col-md-6">
+                        <Search />
+                    </div>
 
-      <div className="col-12 col-md-3 mt-4 mt-md-0 text-center">
-        <span id="cart" className="ml-3">Cart</span>
-        <span className="ml-1" id="cart_count">2</span>
-      </div>
-    </nav>
-    </Fragment>
+                    <div className="col-12 col-md-3 mt-4 mt-md-0 text-center">
+                        <Link to="/cart" className="text-decoration-none">
+                            <span id="cart" className="ml-3 text-white">Cart</span>
+                            <span className="ml-1" id="cart_count">
+                                {cartItems ? cartItems.length : 0}
+                            </span>
+                        </Link>
+                    </div>
+                </div>
+            </nav>
+        </Fragment>
+    );
 }
 
 export default Header;
