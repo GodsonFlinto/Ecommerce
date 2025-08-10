@@ -1,9 +1,11 @@
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 
 export default function Cart({cartItems, setCartItems}){
     
+    const [complete, setComplete] = useState(false)
 const increaseQty = (item) => {
         if(item.product.stock == item.quantity){
             return;
@@ -35,8 +37,22 @@ const increaseQty = (item) => {
             }
         })
         setCartItems(updatedItems)
+        
     }
 
+    function placeOrderHandler(){
+        fetch(`${import.meta.env.VITE_API_URL}/order`, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(cartItems)
+        })
+        .then(()=>{
+            setCartItems([])
+            setComplete(true)
+            toast.success("Order Placed Successfully!")
+        })
+
+    }
     return (
         cartItems.length>0 ? <Fragment>
             <div className="container container-fluid">
@@ -92,15 +108,18 @@ const increaseQty = (item) => {
                 <div id="order_summary">
                     <h4>Order Summary</h4>
                     <hr />
-                    <p>Subtotal:  <span className="order-summary-values">1 (Units)</span></p>
-                    <p>Est. total: <span className="order-summary-values">$245.67</span></p>
+                    <p>Subtotal:  <span className="order-summary-values">{cartItems.reduce((acc, item)=>(acc + item.quantity),0)} (Units)</span></p>
+                    <p>Est. total: <span className="order-summary-values">${cartItems.reduce((acc, item)=>(acc + item.quantity*item.product.price),0)}</span></p>
     
                     <hr />
-                    <button id="checkout_btn" className="btn btn-primary btn-block">Place Order</button>
+                    <button id="checkout_btn" className="btn btn-primary btn-block" onClick={placeOrderHandler}>Place Order</button>
                 </div>
             </div>
         </div>
     </div>
-        </Fragment> : <h2 className="mt-5">Your cart is empty !</h2>
+        </Fragment> : (!complete ? <h2 className="mt-5">Your cart is empty !</h2> : <Fragment>
+            <h2>Order Placed!!</h2>
+            <p>Your order has been placed successfully</p>
+        </Fragment> )
     )
 }
