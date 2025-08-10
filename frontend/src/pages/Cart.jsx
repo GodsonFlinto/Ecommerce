@@ -28,8 +28,18 @@ const increaseQty = (item) => {
         setCartItems(updatedItems)
         }
     }
+    function removeItem(item){
+        const updatedItems = cartItems.filter((i)=>{
+            if(i.product._id !== item.product._id){
+                return true
+            }
+        })
+        setCartItems(updatedItems)
+    }
+
     return (
-        <div className="container container-fluid">
+        cartItems.length>0 ? <Fragment>
+            <div className="container container-fluid">
         <h2 className="mt-5">Your Cart: <b>{cartItems.length} items</b></h2>
         
         <div className="row d-flex justify-content-between">
@@ -67,11 +77,11 @@ const increaseQty = (item) => {
                     </div>
 
                     <div className="col-4 col-lg-1 mt-4 mt-lg-0">
-                        <i id="delete_cart_item" className="fa fa-trash btn btn-danger"></i>
+                        <i id="delete_cart_item" className="fa fa-trash btn btn-danger" onClick={()=>removeItem(item)}></i>
                     </div>
                 </div>
             </div>
-        </Fragment>
+        </Fragment> 
     );
 })}
 
@@ -91,5 +101,6 @@ const increaseQty = (item) => {
             </div>
         </div>
     </div>
+        </Fragment> : <h2 className="mt-5">Your cart is empty !</h2>
     )
 }
